@@ -31,3 +31,4 @@
 .\objects\oled.o: ..\HARDWARE\iic.h
 .\objects\oled.o: ..\SYSTEM\Delay.h
 .\objects\oled.o: ..\HARDWARE\OLED_Data.h
+.\objects\oled.o: D:\xue xiao\Tool\keil_5\ARM\ARMCC\Bin\..\include\string.h

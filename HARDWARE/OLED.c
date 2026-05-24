@@ -2,6 +2,7 @@
 #include "iic.h"
 #include "Delay.h"
 #include "OLED_Data.h"
+#include <string.h>
 
 void OLED_WriteCommand(unsigned char Command)
 {
@@ -165,6 +166,28 @@ void OLED_Show_Img(unsigned char X,unsigned char Page,unsigned char Width,unsign
 		for(unsigned char j = 0;j < Width;j++)
 		{			
 			OLED_WriteData(Img[Width*i+j]);
+		}
+	}
+}
+
+void OLED_Show_Chinese(unsigned char X,unsigned char Page,char* Chinese)
+{
+	char Char[3]={0};
+	unsigned char iNum=0;
+	unsigned char index;
+	for(unsigned char i=0;Chinese[i] != '\0';i++) //取单个汉字编码(GB2312)
+	{
+		Char[iNum]= Chinese[i];
+		iNum++;
+		if(iNum>=2)
+		{
+			iNum=0;
+			for(index=0;strcmp(Chinese_16X16_Char[index].Index,"");index++)	//字模库中遍历
+			{
+				if(strcmp(Chinese_16X16_Char[index].Index,Char)==0)
+					break;
+			}		
+			OLED_Show_Img(X+((i+1)/2-1)*16,Page,16,2,Chinese_16X16_Char[index].Chinese_16X16_Char);
 		}
 	}
 }

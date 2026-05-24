@@ -10,5 +10,5 @@ void OLED_Clear(void);
 void OLED_Show_Char(unsigned char X,unsigned char Page,char Char,unsigned char size);
 void OLED_Show_String(unsigned char X,unsigned char Page,char* String,unsigned char size);
 void OLED_Show_Img(unsigned char X,unsigned char Page,unsigned char Width,unsigned char Height,const unsigned char* Img);
-
+void OLED_Show_Chinese(unsigned char X,unsigned char Page,char* Chinese);
 #endif

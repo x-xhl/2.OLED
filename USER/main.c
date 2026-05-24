@@ -8,7 +8,7 @@
 
 extern const unsigned char Img32X32[][128];
 extern const unsigned char OLED_6X8[][6];
-
+extern const unsigned char Chinese_16X16_Char[][32];
 int main(void)
 {
 //	Led_Init();
@@ -53,8 +53,13 @@ int main(void)
 //	OLED_Show_String(4,0,"Hello",8);
 //	OLED_Show_String(0,3,":;/\\'\"",6);
 	
-	OLED_Show_Img(0,0,32,4,Img32X32[0]);
-	OLED_Show_Img(0,4,32,4,Img32X32[1]);
+//	OLED_Show_Img(0,0,32,4,Img32X32[0]);
+//	OLED_Show_Img(0,4,32,4,Img32X32[1]);
+//	OLED_Show_Img(0,0,16,1,Chinese_16X16_Char[0]);
+//	OLED_Show_Img(16,0,16,1,Chinese_16X16_Char[1]);
+//	OLED_Show_Img(32,0,16,1,Chinese_16X16_Char[2]);
+//	OLED_Show_Img(48,0,16,1,Chinese_16X16_Char[3]);
+	OLED_Show_Chinese(16,1,"ƒ„∫√ ¿ΩÁ—Ω");
 	//OLED_Show_Img(0,0,8,2,Img);
 	while(1)
 	{
