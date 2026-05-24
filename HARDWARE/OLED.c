@@ -1,6 +1,7 @@
 #include "stm32f10x.h"
 #include "iic.h"
 #include "Delay.h"
+#include "OLED.h"
 #include "OLED_Data.h"
 #include <string.h>
 
@@ -16,15 +17,18 @@ void OLED_WriteCommand(unsigned char Command)
   iic_stop();
 }
 
-void OLED_WriteData(unsigned char Data)
+void OLED_WriteData(unsigned char *Data,unsigned char Count)
 {
 	iic_start();
 	iic_write_byte(0x78);				//寻址
 	iic_receive_ark();
 	iic_write_byte(0x40);				//非连续模式，写数据
 	iic_receive_ark();
-	iic_write_byte(Data);				//数据
-	iic_receive_ark();
+	for(unsigned char i=0;i<Count;i++)
+	{
+		iic_write_byte(Data[i]);				//数据
+		iic_receive_ark();
+	}
   iic_stop();
 }
 
@@ -86,91 +90,89 @@ void OLED_SetPoint(unsigned char X,unsigned char Page)
 	OLED_WriteCommand(0xB0 | (Page & 0x07));
 }	
 
+unsigned char OLED_Buf[8][128]={0};
+/*
+功能：屏幕更新
+*/
+void OLED_Updata(void)
+{
+	for(unsigned char i=0;i<8;i++)
+	{
+		OLED_SetPoint(0,i);
+		OLED_WriteData(OLED_Buf[i],128);
+	}
+}
+
 /*
 功能：清屏
 */
 void OLED_Clear(void)
 {
-	for(unsigned char j = 0;j < 8;j++)				//行
+	for(unsigned char i = 0;i < 8;i++)				//行
 	{
-		OLED_SetPoint(0,j);
-		for(unsigned char i = 0 ;i < 128;i++)		//列
+		for(unsigned char j = 0;j < 128;j++)				//列
 		{
-			OLED_WriteData(0x00);
+			OLED_Buf[i][j]=0x00;
 		}
 	}
+	OLED_Updata();
 }
 
 /*
 功能：输出一个字符
-X		:0~15	(size=8),0~20	(size=6)
-Page:0~3	(size=8),0~7	(size=6)
+X		:0~119	(size=8),0~121	(size=6)
+Y		:0~63
 Char:ASCII码32位~126位
 size:6/8
 */
-void OLED_Show_Char(unsigned char X,unsigned char Page,char Char,unsigned char size)
+void OLED_Show_Char(unsigned char X,unsigned char Y,char Char,unsigned char size)
 {
 	switch(size)
 	{
 		case 6:
-			OLED_SetPoint(X*6,Page);
-			for(unsigned char i = 0;i < 6;i++)
-			{
-				OLED_WriteData(OLED_6X8[Char-' '][i]);
-			}
+			OLED_Show_Img(X,Y,6,6,OLED_6X8[Char-' ']);
 			break;
 			
 		case 8:
-			//上半部分8*8
-			OLED_SetPoint(X*8,Page*2);
-			for(unsigned char i = 0;i < 8;i++)
-			{
-				OLED_WriteData(OLED_8X16[Char-' '][i]);
-			}
-			//下半部分8*8
-			OLED_SetPoint(X*8,Page*2+1);
-			for(unsigned char i = 0;i < 8;i++)
-			{
-				OLED_WriteData(OLED_8X16[Char-' '][8+i]);
-			}
+			OLED_Show_Img(X,Y,8,16,OLED_8X16[Char-' ']);
 			break;
 	}
 }
 /*
 功能：输出一串字符
-X		:0~15	(size=8),0~2	(size=6)
-Page:0~3	(size=8),0~7	(size=6)
+X		:0~119	(size=8),0~121	(size=6)
+Y		:0~63
 Char:ASCII码32位~126位
 size:6/8
 */
-void OLED_Show_String(unsigned char X,unsigned char Page,char* String,unsigned char size)
+void OLED_Show_String(unsigned char X,unsigned char Y,char* String,unsigned char size)
 {
 		for(unsigned char i = 0;String[i] != '\0';i++)
 		{
-			OLED_Show_Char(X+i,Page,String[i],size);
+			OLED_Show_Char(X+i*size,Y,String[i],size);
 		}
 }
 
 /*
 功能：输出图像
 X			:0~127	
-Page	:0~7
+Y			:0~63
 Width	:X-Width>=0
 Height:Page-Height>=0
 */
-void OLED_Show_Img(unsigned char X,unsigned char Page,unsigned char Width,unsigned char Height,const unsigned char* Img)
+void OLED_Show_Img(unsigned char X,unsigned char Y,unsigned char Width,unsigned char Height,const unsigned char* Img)
 {
-	for(unsigned char i = 0;i <Height ;i++)
+	for(unsigned char i = 0;i < (Height-1)/8+1;i++)
 	{
-		OLED_SetPoint(X,Page+i);
 		for(unsigned char j = 0;j < Width;j++)
-		{			
-			OLED_WriteData(Img[Width*i+j]);
+		{
+			OLED_Buf[Y/8+i][X+j] |=Img[j+i*Width]<<(Y%8);
+			OLED_Buf[Y/8+1+i][X+j] |=Img[j+i*Width]>>(8-Y%8);
 		}
 	}
 }
 
-void OLED_Show_Chinese(unsigned char X,unsigned char Page,char* Chinese)
+void OLED_Show_Chinese(unsigned char X,unsigned char Y,char* Chinese)
 {
 	char Char[3]={0};
 	unsigned char iNum=0;
@@ -187,7 +189,7 @@ void OLED_Show_Chinese(unsigned char X,unsigned char Page,char* Chinese)
 				if(strcmp(Chinese_16X16_Char[index].Index,Char)==0)
 					break;
 			}		
-			OLED_Show_Img(X+((i+1)/2-1)*16,Page,16,2,Chinese_16X16_Char[index].Chinese_16X16_Char);
+			OLED_Show_Img(X+((i+1)/2-1)*16,Y,16,16,Chinese_16X16_Char[index].Chinese_16X16_Char);
 		}
 	}
 }

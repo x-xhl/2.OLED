@@ -5,10 +5,11 @@
 #include "usart.h"
 #include "MyI2C.h"
 #include "OLED.h"
-
+extern const unsigned char Img15X15[][30];
 extern const unsigned char Img32X32[][128];
 extern const unsigned char OLED_6X8[][6];
 extern const unsigned char Chinese_16X16_Char[][32];
+extern unsigned char OLED_Buf[8][128];
 int main(void)
 {
 //	Led_Init();
@@ -23,44 +24,12 @@ int main(void)
 //		GPIO_SetBits(GPIOB,GPIO_Pin_13);
 	OLED_Init();
 	OLED_Clear();
+	OLED_Show_String(5,10,"Hello,world",6);
+	OLED_Show_String(5,16,"Hello,world",8);
+	//OLED_Show_Chinese(16,16,"你好世界呀");
+	//OLED_Show_Img(2,10,32,32,Img32X32[0]);
+	OLED_Updata();
 	
-//	OLED_SetPoint(0,0);
-//	OLED_WriteData(0x01);
-//	OLED_WriteData(0x03);
-//	OLED_WriteData(0x07);
-//	OLED_WriteData(0x0f);
-//	OLED_WriteData(0x1f);
-//	OLED_WriteData(0x3f);
-//	OLED_WriteData(0x7f);
-//	OLED_WriteData(0xff);
-//	OLED_SetPoint(127,7);
-//	OLED_WriteData(0xff);
-//	OLED_SetPoint(128,7);
-//	OLED_WriteData(0x55);
-//	OLED_Show_Char(0,0,'1',8);
-//	OLED_Show_Char(1,0,'1',8);
-//	OLED_Show_Char(2,0,'1',8);
-//	OLED_Show_Char(3,0,'1',8);
-
-//	OLED_Show_Char(5,0,'2',6);
-//	OLED_Show_Char(6,0,'2',6);
-//	OLED_Show_Char(2,2,'3',8);
-//	OLED_Show_Char(0,3,'4',8);
-//	OLED_Show_Char(1,2,'5',8);
-//	OLED_Show_Char(20,7,'6',6);
-//	OLED_Show_String(0,0,"hello",6);
-//	OLED_Show_String(0,1,"world",6);
-//	OLED_Show_String(4,0,"Hello",8);
-//	OLED_Show_String(0,3,":;/\\'\"",6);
-	
-//	OLED_Show_Img(0,0,32,4,Img32X32[0]);
-//	OLED_Show_Img(0,4,32,4,Img32X32[1]);
-//	OLED_Show_Img(0,0,16,1,Chinese_16X16_Char[0]);
-//	OLED_Show_Img(16,0,16,1,Chinese_16X16_Char[1]);
-//	OLED_Show_Img(32,0,16,1,Chinese_16X16_Char[2]);
-//	OLED_Show_Img(48,0,16,1,Chinese_16X16_Char[3]);
-	OLED_Show_Chinese(16,1,"你好世界呀");
-	//OLED_Show_Img(0,0,8,2,Img);
 	while(1)
 	{
 		
