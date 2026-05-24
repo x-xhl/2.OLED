@@ -102,8 +102,8 @@ void OLED_Clear(void)
 
 /*
 功能：输出一个字符
-X：0~15(size=8),0~2(size=6)
-Page:0~3(size=8),0~7(size=6)
+X		:0~15	(size=8),0~20	(size=6)
+Page:0~3	(size=8),0~7	(size=6)
 Char:ASCII码32位~126位
 size:6/8
 */
@@ -137,8 +137,8 @@ void OLED_Show_Char(unsigned char X,unsigned char Page,char Char,unsigned char s
 }
 /*
 功能：输出一串字符
-X：0~15(size=8),0~2(size=6)
-Page:0~3(size=8),0~7(size=6)
+X		:0~15	(size=8),0~2	(size=6)
+Page:0~3	(size=8),0~7	(size=6)
 Char:ASCII码32位~126位
 size:6/8
 */
@@ -148,4 +148,23 @@ void OLED_Show_String(unsigned char X,unsigned char Page,char* String,unsigned c
 		{
 			OLED_Show_Char(X+i,Page,String[i],size);
 		}
+}
+
+/*
+功能：输出图像
+X			:0~127	
+Page	:0~7
+Width	:X-Width>=0
+Height:Page-Height>=0
+*/
+void OLED_Show_Img(unsigned char X,unsigned char Page,unsigned char Width,unsigned char Height,const unsigned char* Img)
+{
+	for(unsigned char i = 0;i <Height ;i++)
+	{
+		OLED_SetPoint(X,Page+i);
+		for(unsigned char j = 0;j < Width;j++)
+		{			
+			OLED_WriteData(Img[Width*i+j]);
+		}
+	}
 }

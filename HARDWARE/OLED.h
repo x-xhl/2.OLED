@@ -9,4 +9,6 @@ void OLED_SetPoint(unsigned char X,unsigned char Page);
 void OLED_Clear(void);
 void OLED_Show_Char(unsigned char X,unsigned char Page,char Char,unsigned char size);
 void OLED_Show_String(unsigned char X,unsigned char Page,char* String,unsigned char size);
+void OLED_Show_Img(unsigned char X,unsigned char Page,unsigned char Width,unsigned char Height,const unsigned char* Img);
+
 #endif

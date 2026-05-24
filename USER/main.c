@@ -6,6 +6,9 @@
 #include "MyI2C.h"
 #include "OLED.h"
 
+extern const unsigned char Img32X32[][128];
+extern const unsigned char OLED_6X8[][6];
+
 int main(void)
 {
 //	Led_Init();
@@ -45,10 +48,14 @@ int main(void)
 //	OLED_Show_Char(0,3,'4',8);
 //	OLED_Show_Char(1,2,'5',8);
 //	OLED_Show_Char(20,7,'6',6);
-	OLED_Show_String(0,0,"hello",6);
-	OLED_Show_String(0,1,"world",6);
-	OLED_Show_String(4,0,"Hello",8);
-	OLED_Show_String(0,1,"Hello",8);
+//	OLED_Show_String(0,0,"hello",6);
+//	OLED_Show_String(0,1,"world",6);
+//	OLED_Show_String(4,0,"Hello",8);
+//	OLED_Show_String(0,3,":;/\\'\"",6);
+	
+	OLED_Show_Img(0,0,32,4,Img32X32[0]);
+	OLED_Show_Img(0,4,32,4,Img32X32[1]);
+	//OLED_Show_Img(0,0,8,2,Img);
 	while(1)
 	{
 		
