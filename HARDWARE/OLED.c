@@ -119,7 +119,12 @@ void OLED_Clear(void)
 }
 
 /*
-功能：清屏
+功能：部分区域清屏
+X			:0~127	
+Y			:0~63
+Width	:像素宽度
+Height:像素高度
+Scroll:是否滚动
 */
 void OLED_AreaClear(unsigned char X,unsigned char Y,unsigned char Width,unsigned char Height)
 {
@@ -136,10 +141,11 @@ void OLED_AreaClear(unsigned char X,unsigned char Y,unsigned char Width,unsigned
 }
 /*
 功能：输出一个字符
-X		:0~119	(size=8),0~121	(size=6)
+X		:0~127
 Y		:0~63
-Char:ASCII码32位~126位
+Char:ASCII码32位~126位对应字符
 size:6/8
+Scroll:是否滚动
 */
 void OLED_Show_Char(unsigned char X,unsigned char Y,char Char,unsigned char size,unsigned char Scroll)
 {
@@ -156,10 +162,11 @@ void OLED_Show_Char(unsigned char X,unsigned char Y,char Char,unsigned char size
 }
 /*
 功能：输出一串字符
-X		:0~119	(size=8),0~121	(size=6)
-Y		:0~63
-Char:ASCII码32位~126位
-size:6/8
+X			:0~127
+Y			:0~63
+Char	:ASCII码32位~126位对应字符
+size	:6/8
+Scroll:是否滚动
 */
 void OLED_Show_String(unsigned char X,unsigned char Y,char* String,unsigned char size,unsigned char Scroll)
 {
@@ -173,6 +180,10 @@ void OLED_Show_String(unsigned char X,unsigned char Y,char* String,unsigned char
 功能：输出图像
 X			:0~127	
 Y			:0~63
+Width	:像素宽度
+Height:像素高度
+Img		:字模数组
+Scroll:是否滚动
 */
 void OLED_Show_Img(unsigned char X,unsigned char Y,unsigned char Width,unsigned char Height,const unsigned char* Img,unsigned char Scroll)
 {
@@ -193,6 +204,13 @@ void OLED_Show_Img(unsigned char X,unsigned char Y,unsigned char Width,unsigned 
 	}
 }
 
+/*
+功能：输出16X16像素中文(GB2312编码)
+X				:0~127	
+Y				:0~63
+Chinese	:字模数组
+Scroll	:是否滚动
+*/
 void OLED_Show_Chinese(unsigned char X,unsigned char Y,char* Chinese,unsigned char Scroll)
 {
 	char Char[3]={0};
@@ -213,4 +231,22 @@ void OLED_Show_Chinese(unsigned char X,unsigned char Y,char* Chinese,unsigned ch
 			OLED_Show_Img(X+((i+1)/2-1)*16,Y,16,16,Chinese_16X16_Char[index].Chinese_16X16_Char, Scroll);
 		}
 	}
+}
+/*
+功能：输出一个像素点
+X			:0~127	
+Y			:0~63
+*/
+void OLED_Show_Point(unsigned char X,unsigned char Y)
+{
+	OLED_Buf[Y/8][X] |= 0x01<<(Y%8);
+}
+/*
+功能：清除一个像素点
+X			:0~127	
+Y			:0~63
+*/
+void OLED_Clear_Point(unsigned char X,unsigned char Y)
+{
+	OLED_Buf[Y/8][X] &= ~(0x01<<(Y%8));
 }
