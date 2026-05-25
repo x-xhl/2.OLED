@@ -54,7 +54,6 @@ void usart_init(unsigned int bound){
 void USART3_IRQHandler(void)                	           
 {
   if(USART_GetITStatus(USART3, USART_IT_RXNE) != RESET){        //如果收到数据(接收中断) 
-    USART_ClearFlag(USART3, USART_IT_RXNE);                     //清除接收中断标志   
-    
+    USART_ClearFlag(USART3, USART_IT_RXNE);                     //清除接收中断标志     
   } 
 }

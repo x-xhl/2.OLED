@@ -129,8 +129,8 @@ void OLED_AreaClear(unsigned char X,unsigned char Y,unsigned char Width,unsigned
 		{
 //			OLED_Buf[Y/8+i][X+j] &= ~0xFF<<(Y % 8);
 //			OLED_Buf[Y/8+1+i][X+j] &= ~0xFF>>(8- Y % 8);
-			OLED_Buf[(Y/8+i)%8][(X+j)%128] &= ~0xFF<<(Y % 8);
-			OLED_Buf[(Y/8+1+i)%8][(X+j)%128] &= ~0xFF>>(8- Y % 8);
+			OLED_Buf[(Y/8+i)%8][(X+j)%128] &= ~(0xFF<<(Y % 8));
+			OLED_Buf[(Y/8+1+i)%8][(X+j)%128] &= ~(0xFF>>(8- Y % 8));
 		}
 	}
 }

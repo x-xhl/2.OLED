@@ -25,20 +25,17 @@ int main(void)
 	OLED_Init();
 	OLED_Clear();
 
-	for(unsigned int i=0;i<=256;i++)
-	{
-		OLED_Show_String(i,0,"ABCDE",8,1);
-		OLED_Show_Chinese(i,i,"你好世界",1);
-		Delay_ms(10);
-		OLED_Updata();
-		//OLED_Clear();
-		
-	}
-	//OLED_Show_Img(2,10,32,32,Img32X32[0]);
-	
-	
+	OLED_Show_String(50,17,"Hello",6,0);
+	OLED_Show_String(50,25,"World",6,0);
+
 	while(1)
 	{
-		
+		for(unsigned int i=0;i<=256;i++)
+		{
+			if(i==256) i=0;
+			OLED_Show_Chinese(i,0,"你好世界",1);
+			Delay_ms(10);
+			OLED_Updata();
+		}
 	}	
 }
