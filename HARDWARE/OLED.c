@@ -119,22 +119,38 @@ void OLED_Clear(void)
 }
 
 /*
+功能：清屏
+*/
+void OLED_AreaClear(unsigned char X,unsigned char Y,unsigned char Width,unsigned char Height)
+{
+	for(unsigned char i = 0;i < (Height-1)/8+1;i++)				//行
+	{
+		for(unsigned char j = 0;j < Width;j++)				//列
+		{
+//			OLED_Buf[Y/8+i][X+j] &= ~0xFF<<(Y % 8);
+//			OLED_Buf[Y/8+1+i][X+j] &= ~0xFF>>(8- Y % 8);
+			OLED_Buf[(Y/8+i)%8][(X+j)%128] &= ~0xFF<<(Y % 8);
+			OLED_Buf[(Y/8+1+i)%8][(X+j)%128] &= ~0xFF>>(8- Y % 8);
+		}
+	}
+}
+/*
 功能：输出一个字符
 X		:0~119	(size=8),0~121	(size=6)
 Y		:0~63
 Char:ASCII码32位~126位
 size:6/8
 */
-void OLED_Show_Char(unsigned char X,unsigned char Y,char Char,unsigned char size)
+void OLED_Show_Char(unsigned char X,unsigned char Y,char Char,unsigned char size,unsigned char Scroll)
 {
 	switch(size)
 	{
 		case 6:
-			OLED_Show_Img(X,Y,6,6,OLED_6X8[Char-' ']);
+			OLED_Show_Img(X,Y,6,6,OLED_6X8[Char-' '],Scroll);
 			break;
 			
 		case 8:
-			OLED_Show_Img(X,Y,8,16,OLED_8X16[Char-' ']);
+			OLED_Show_Img(X,Y,8,16,OLED_8X16[Char-' '],Scroll);
 			break;
 	}
 }
@@ -145,34 +161,39 @@ Y		:0~63
 Char:ASCII码32位~126位
 size:6/8
 */
-void OLED_Show_String(unsigned char X,unsigned char Y,char* String,unsigned char size)
+void OLED_Show_String(unsigned char X,unsigned char Y,char* String,unsigned char size,unsigned char Scroll)
 {
-		for(unsigned char i = 0;String[i] != '\0';i++)
-		{
-			OLED_Show_Char(X+i*size,Y,String[i],size);
-		}
+	for(unsigned char i = 0;String[i] != '\0';i++)
+	{
+		OLED_Show_Char(X+i*size,Y,String[i],size,Scroll);
+	}
 }
 
 /*
 功能：输出图像
 X			:0~127	
 Y			:0~63
-Width	:X-Width>=0
-Height:Page-Height>=0
 */
-void OLED_Show_Img(unsigned char X,unsigned char Y,unsigned char Width,unsigned char Height,const unsigned char* Img)
+void OLED_Show_Img(unsigned char X,unsigned char Y,unsigned char Width,unsigned char Height,const unsigned char* Img,unsigned char Scroll)
 {
+	if(Scroll)
+	{
+		OLED_AreaClear(X-1,Y-1,Width,Height);
+	}
+	OLED_AreaClear(X,Y,Width,Height);
 	for(unsigned char i = 0;i < (Height-1)/8+1;i++)
 	{
 		for(unsigned char j = 0;j < Width;j++)
 		{
-			OLED_Buf[Y/8+i][X+j] |=Img[j+i*Width]<<(Y%8);
-			OLED_Buf[Y/8+1+i][X+j] |=Img[j+i*Width]>>(8-Y%8);
+//			OLED_Buf[Y/8+i][X+j] |=Img[j+i*Width]<<(Y%8);
+//			OLED_Buf[Y/8+1+i][X+j] |=Img[j+i*Width]>>(8-Y%8);
+			OLED_Buf[(Y/8+i)%8][(X+j)%128] |=Img[j+i*Width]<<(Y%8);
+			OLED_Buf[(Y/8+1+i)%8][(X+j)%128] |=Img[j+i*Width]>>(8-Y%8);
 		}
 	}
 }
 
-void OLED_Show_Chinese(unsigned char X,unsigned char Y,char* Chinese)
+void OLED_Show_Chinese(unsigned char X,unsigned char Y,char* Chinese,unsigned char Scroll)
 {
 	char Char[3]={0};
 	unsigned char iNum=0;
@@ -189,7 +210,7 @@ void OLED_Show_Chinese(unsigned char X,unsigned char Y,char* Chinese)
 				if(strcmp(Chinese_16X16_Char[index].Index,Char)==0)
 					break;
 			}		
-			OLED_Show_Img(X+((i+1)/2-1)*16,Y,16,16,Chinese_16X16_Char[index].Chinese_16X16_Char);
+			OLED_Show_Img(X+((i+1)/2-1)*16,Y,16,16,Chinese_16X16_Char[index].Chinese_16X16_Char, Scroll);
 		}
 	}
 }

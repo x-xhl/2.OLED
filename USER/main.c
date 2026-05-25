@@ -24,11 +24,18 @@ int main(void)
 //		GPIO_SetBits(GPIOB,GPIO_Pin_13);
 	OLED_Init();
 	OLED_Clear();
-	OLED_Show_String(5,10,"Hello,world",6);
-	OLED_Show_String(5,16,"Hello,world",8);
-	//OLED_Show_Chinese(16,16,"你好世界呀");
+
+	for(unsigned int i=0;i<=256;i++)
+	{
+		OLED_Show_String(i,0,"ABCDE",8,1);
+		OLED_Show_Chinese(i,i,"你好世界",1);
+		Delay_ms(10);
+		OLED_Updata();
+		//OLED_Clear();
+		
+	}
 	//OLED_Show_Img(2,10,32,32,Img32X32[0]);
-	OLED_Updata();
+	
 	
 	while(1)
 	{
